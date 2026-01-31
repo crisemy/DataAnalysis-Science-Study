@@ -1251,7 +1251,6 @@ drop_list = high_correlated_cols(df, plot=True)
 
 len(df.drop(drop_list, axis=1).columns)
 
-type(adsa)
 
 
 
