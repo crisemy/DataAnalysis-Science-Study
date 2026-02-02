@@ -1,7 +1,10 @@
 Udemy Course:
 https://www.udemy.com/course/unlocking-the-power-of-chatgpt-in-data-science-a-z-guide/learn/lecture/35886520?start=0#overview
 
-# Data Exploration prompts:
+################
+# Data Exploration
+################
+
 - Use this dataset to generate summary statistics, visualizations and insights. Utilice este conjunto de datos para generar estadísticas de resumen, visualizaciones y conocimientos.
 
 Estadísticas de Resumen
@@ -65,7 +68,9 @@ Response: See the dataExploration.py file
 
 - What factors seems to be the most significant predictors of housing prices in this dataset? ¿Qué factores parecen ser los predictores más significativos de los precios de la vivienda en este conjunto de datos?
 
+################
 # Data Modeling
+################
 
 The Iris dataset is a small, clean, labeled dataset of flower measurements used primarily to demonstrate and teach classification techniques in machine learning and statistics.
 
@@ -247,3 +252,116 @@ MLP (optional, educational)
 
 Below is a clean, end-to-end Python example of a Logistic Regression model using the Iris dataset with scikit-learn.
 This follows standard ML best practices: train/test split, feature scaling, training, and evaluation.
+
+################
+# Feature Engineering
+################a
+
+- Generate suggestions for new features to create based on the below data:
+
+Location,Number of bedrooms,Number of bathrooms,Square footage,Sale price
+Beverly Hills,5,5,"3,200","$2,500,000"
+Bel Air,5,6,"2,800","$3,500,000"
+Beverly Hills,4,4,"1,600","$3,200,000"
+Long Beach,2,1,"1,000","$850,000"
+Irvine,2,1,"1,000","$780,000"
+Downtown LA,5,5,"1,800","$1,775,000"
+Huntington Beach,3,2,"1,100","$1,175,000"
+Del Mar,3,4,"1,200","$1,150,000"
+West Hollywood,3,2,"1,900","$1,625,000"
+
+Response:
+
+1. First: Data Cleaning (Prerequisite)
+Before feature engineering, normalize the raw fields:
+Remove commas from square_footage
+Remove $ and commas from sale_price
+Convert both to numeric
+Encode location
+This enables all downstream feature creation.
+2. Location-Based Features (Highest Impact)
+Location is categorical but economically dominant.
+2.1 Location Encoding
+Options:
+One-Hot Encoding (small dataset)
+Target Encoding (recommended for price modeling)
+Engineered Feature
+location_avg_price
+Mean sale price per location
+Beverly Hills → very high
+Bel Air → ultra high
+Irvine → mid
+Long Beach → lower
+📌 This often becomes the single most important feature.
+2.2 Luxury Indicator (Binary)
+is_luxury_location = 1 if location in [Bel Air, Beverly Hills, Del Mar, West Hollywood]
+Captures prestige without overfitting.
+3. Size & Density Features
+3.1 Price per Square Foot (Very Strong Signal)
+price_per_sqft = sale_price / square_footage
+This normalizes pricing across locations and sizes.
+3.2 Living Space Efficiency
+bedrooms_per_sqft = bedrooms / square_footage
+bathrooms_per_sqft = bathrooms / square_footage
+High ratios often indicate:
+Smaller units
+Lower luxury
+4. Room Composition Features
+4.1 Bathroom-to-Bedroom Ratio
+bath_bed_ratio = bathrooms / bedrooms
+Luxury homes often have:
+bath_bed_ratio ≥ 1
+4.2 Total Rooms
+total_rooms = bedrooms + bathrooms
+Simple but effective proxy for scale.
+5. Interaction Features (Very Important)
+5.1 Size × Location Interaction
+sqft_location_interaction = square_footage * location_avg_price
+Captures:
+“Big house in expensive area” vs “big house in cheap area”
+5.2 Bedrooms × Bathrooms Interaction
+room_interaction = bedrooms * bathrooms
+Separates:
+Functional homes
+Luxury layouts
+6. Luxury & Market Tier Indicators
+6.1 Luxury Home Flag
+is_luxury_home = 1 if
+    square_footage > 2000
+    AND bathrooms >= bedrooms
+6.2 High-Price Segment
+price_segment:
+- 0 → Budget
+- 1 → Mid-range
+- 2 → Luxury
+Based on quantiles.
+7. Recommended Engineered Feature Set
+🔥 Highest Predictive Power
+location_avg_price
+price_per_sqft
+square_footage
+bath_bed_ratio
+⚠️ Medium Importance
+total_rooms
+is_luxury_location
+sqft_location_interaction
+❄️ Lower Importance
+bedrooms_per_sqft
+bathrooms_per_sqft
+room_interaction
+8. Minimal High-Performance Feature Set
+If you want maximum signal with minimum complexity:
+square_footage
+price_per_sqft
+location_avg_price
+bath_bed_ratio
+This set usually explains >85–90% of variance in small real-estate datasets.
+9. Key Takeaway
+In real estate price modeling, location + size normalization + room ratios dominate predictive power.
+Raw bedroom counts alone are weak predictors without engineered context.
+
+- How can we perform feature engineering on the above dataset using Python's Pandas Library (See the code that has been generated featureEngineering.ipynb)
+- Perform standarization technique of feature engineering on the mentioned data and share the results in tabular format
+- combine features as part of feature engineering on the mentioned data and share the results in a tabular format
+- create interaction terms on the mentioned data and provide results only
+- Perform mutual information regression feature selection techniques
